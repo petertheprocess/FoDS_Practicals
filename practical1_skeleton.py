@@ -543,9 +543,9 @@ def choose_hyper_param(X_train_n, y_train_n, X_train_v, y_train_v, is_ridge: boo
     for pow_lam in range(-4, 3):
         lam = 10 ** pow_lam
         if(is_ridge):
-            reg = linear_model.Ridge(alpha=lam)
+            reg = linear_model.Ridge(alpha=lam , tol=1e-6,max_iter=1e9)
         else:
-            reg = linear_model.Lasso(alpha=lam)
+            reg = linear_model.Lasso(alpha=lam , tol=1e-6,max_iter=1e9)
         reg.fit(X_train_n,y_train_n)
         y_predicted_v = reg.predict(X_train_v) 
         mse = ((y_train_v - y_predicted_v)**2).mean(axis=None)
@@ -585,12 +585,12 @@ print("Lasso lambda:", lam_lasso)
 ##### YOUR CODE STARTS HERE #######################
 ###################################################
 # Hints: train these models on the full training data
-reg_ridge = linear_model.Ridge(lam_ridge)
+reg_ridge = linear_model.Ridge(lam_ridge , tol=1e-6,max_iter=1e9)
 reg_ridge.fit(X_train,y_train)
 mse_ridge_train = ((y_train - reg_ridge.predict(X_train))**2).mean(axis=None)
 mse_ridge_test = ((y_test - reg_ridge.predict(X_test))**2).mean(axis=None)
 
-reg_lasso = linear_model.Lasso(lam_lasso)
+reg_lasso = linear_model.Lasso(lam_lasso , tol=1e-6,max_iter=1e9)
 reg_lasso.fit(X_train,y_train)
 mse_lasso_train = ((y_train - reg_lasso.predict(X_train))**2).mean(axis=None)
 mse_lasso_test = ((y_test - reg_lasso.predict(X_test))**2).mean(axis=None)
@@ -650,9 +650,9 @@ def choose_hyper_param_KFlod(X_train, y_train, is_ridge: bool, n_splits):
             y_train_n, y_train_v = y_train[train_index], y_train[validate_index]
             
             if(is_ridge):
-                reg = linear_model.Ridge(alpha=lam)
+                reg = linear_model.Ridge(alpha=lam , tol=1e-6,max_iter=1e9)
             else:
-                reg = linear_model.Lasso(alpha=lam)
+                reg = linear_model.Lasso(alpha=lam , tol=1e-6,max_iter=1e9)
             reg.fit(X_train_n,y_train_n)
             y_predicted_v = reg.predict(X_train_v) 
             mse = ((y_train_v - y_predicted_v)**2).mean(axis=None)
@@ -684,14 +684,14 @@ for degree in range(2,5): # degree 2, 3 ,4
     print("Lasso lambda:", lam_lasso)    
     # step2
     #  Model training and the MSEs results
-    reg_ridge = linear_model.Ridge(lam_ridge)
+    reg_ridge = linear_model.Ridge(lam_ridge , tol=1e-6,max_iter=1e9)
     reg_ridge.fit(X_train,y_train)
     mse_ridge_train = ((y_train - reg_ridge.predict(X_train))**2).mean(axis=None)
     mse_ridge_test = ((y_test - reg_ridge.predict(X_test))**2).mean(axis=None)
     mse_ridge_train_arr.append(mse_ridge_train)
     mse_ridge_test_arr.append(mse_ridge_test)
 
-    reg_lasso = linear_model.Lasso(lam_lasso)
+    reg_lasso = linear_model.Lasso(lam_lasso , tol=1e-6,max_iter=1e9)
     reg_lasso.fit(X_train,y_train)
     mse_lasso_train = ((y_train - reg_lasso.predict(X_train))**2).mean(axis=None)
     mse_lasso_test = ((y_test - reg_lasso.predict(X_test))**2).mean(axis=None)
@@ -716,7 +716,6 @@ for degree in range(2,5): # degree 2, 3 ,4
 
 # %%
 # The below code generates the learning curves plot
-plt.figure()
 plt.plot(np.arange(2,5), mse_ridge_train_arr, 'ro--', label="Ridge Training Error",markersize=4)
 plt.plot(np.arange(2,5), mse_ridge_test_arr, 'ro-', label="Ridge Test Error",markersize=4)
 plt.plot(np.arange(2,5), mse_lasso_train_arr, 'bo--', label="Lasso Test Error",markersize=4)
